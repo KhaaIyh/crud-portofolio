@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../midleware/user.api";
 import { skillApi } from "../midleware/skill.api";
@@ -6,6 +7,40 @@ import { projectApi } from "../midleware/project.api";
 
 function Navbar() {
   const navigate = useNavigate();
+  const [hasData, setHasData] = useState(false);
+
+  useEffect(() => {
+    const checkData = async () => {
+      try {
+        const userResponse = await userApi.getUser();
+        const users = userResponse.data.data.items || [];
+
+        const skillResponse = await skillApi.getSkill();
+        const skills = skillResponse.data.data.items || [];
+
+        const certificateResponse = await certificateApi.getCertificate();
+        const certificates = certificateResponse.data.data.items || [];
+
+        const projectResponse = await projectApi.getProject();
+        const projects = projectResponse.data.data.items || [];
+
+        if (
+          users.length > 0 ||
+          skills.length > 0 ||
+          certificates.length > 0 ||
+          projects.length > 0
+        ) {
+          setHasData(true);
+        } else {
+          setHasData(false);
+        }
+      } catch (error) {
+        console.error("Error checking data:", error);
+      }
+    };
+
+    checkData();
+  }, []);
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete all data?")) {
@@ -90,14 +125,16 @@ function Navbar() {
               Project
             </a>
           </li>
-          <li>
-            <button
-              onClick={() => navigate("/create")}
-              className="text-cyan-300 font-bold hover:text-cyan-800"
-            >
-              Make your Portofolio
-            </button>
-          </li>
+          {!hasData && (
+            <li>
+              <button
+                onClick={() => navigate("/create")}
+                className="text-cyan-300 font-bold hover:text-cyan-800"
+              >
+                Make your Portofolio
+              </button>
+            </li>
+          )}
           <li>
             <button
               onClick={() => navigate("/edit")}
