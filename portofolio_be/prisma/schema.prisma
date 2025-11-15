@@ -1,0 +1,59 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+  id_user     String      @id @default(uuid())
+  email       String      @unique
+  no_hp       String?     @unique
+  nama        String?
+  title       String?
+  bio         String?     @db.Text
+  profile     String?     
+  instagram   String?
+  github      String?
+  linkedin    String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt @default(now())
+
+  skill       Skill[]
+  certificate Certificate[]
+  project     Project[]
+}
+
+model Skill {
+  id_skill    String      @id @default(uuid())
+  nama_skill  String?
+  desk_skill  String?     @db.Text
+  user        User        @relation(fields: [id_user], references: [id_user])
+  id_user     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt @default(now())
+}
+
+model Certificate {
+  id_certificate    String      @id  @default(uuid())
+  nama_certificate  String?
+  desk_certificate  String?     @db.Text
+  user              User        @relation(fields: [id_user], references: [id_user])
+  id_user           String
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt @default(now())
+}
+
+model Project {
+  id_project    String      @id @default(uuid())
+  nama_project  String?
+  desk_project  String?     @db.Text
+  foto_project  String?
+  user          User        @relation(fields: [id_user], references: [id_user])
+  id_user       String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt @default(now())
+}
