@@ -18,7 +18,9 @@ class userService extends BaseService {
   };
 
   findById = async (id: string) => {
-    const data = await this.db.user.findUniqueOrThrow({ where: { id_user: id } });
+    const data = await this.db.user.findUniqueOrThrow({
+      where: { id_user: id },
+    });
     return data;
   };
 
@@ -28,7 +30,10 @@ class userService extends BaseService {
   };
 
   update = async (id: string, payload: any) => {
-    const data = await this.db.user.update({ where: { id_user: id }, data: payload });
+    const data = await this.db.user.update({
+      where: { id_user: id },
+      data: payload,
+    });
     return data;
   };
 

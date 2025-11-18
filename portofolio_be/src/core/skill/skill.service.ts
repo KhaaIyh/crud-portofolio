@@ -18,7 +18,9 @@ class skillService extends BaseService {
   };
 
   findById = async (id: string) => {
-    const data = await this.db.skill.findUniqueOrThrow({ where: { id_skill: id } });
+    const data = await this.db.skill.findUniqueOrThrow({
+      where: { id_skill: id },
+    });
     return data;
   };
 
@@ -28,7 +30,10 @@ class skillService extends BaseService {
   };
 
   update = async (id: string, payload: any) => {
-    const data = await this.db.skill.update({ where: { id_skill: id }, data: payload });
+    const data = await this.db.skill.update({
+      where: { id_skill: id },
+      data: payload,
+    });
     return data;
   };
 

@@ -31,7 +31,15 @@ export interface Certificate {
 
 // Method API
 const certificateApi = {
-  getCertificate: () => instance.get("/certificate"),
+  getCertificate: (id_user?: string) => {
+    if (id_user) {
+      return instance.get(`/certificate`, {
+        params: { where: `id_user:${id_user}` },
+      });
+    } else {
+      return instance.get("/certificate");
+    }
+  },
   createCertificate: (data: {
     nama_certificate: string;
     desk_certificate: string;

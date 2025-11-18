@@ -1,31 +1,3 @@
-// function Skill() {
-//   return (
-//     <>
-//       <div className="bg-white text-black py-10 px-96 flex flex-col justify-center items-center gap-4">
-//         {/* <h1 className="font-bold text-3xl">Tentang Saya</h1>
-//         <p className="pt-6 text-justify">{user?.bio || "Your Bio."}</p> */}
-
-//         <h1 className="font-bold text-4xl">Your Skill</h1>
-//         <div className="flex justify-between gap-4">
-//           <div>
-//             <label className="font-bold">Skill name</label>
-//             <input
-//               type="text"
-//               className="bg-slate-200 w-full rounded-md p-2 shadow-xl"
-//             />
-//           </div>
-//           <div>
-//             <label className="font-bold">Skill description</label>
-//             <textarea className="bg-slate-200 w-full rounded-md p-2 shadow-xl"></textarea>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
-// export default Skill;
-
 type SkillItem = {
   nama_skill: string;
   desk_skill: string;
@@ -44,7 +16,7 @@ function Skill({ skills, setSkills, addSkill }: SkillProps) {
     value: string
   ) => {
     const updated = [...skills];
-    updated[index][field] = value as never;
+    updated[index][field] = value as string;
     setSkills(updated);
   };
 

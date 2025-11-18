@@ -31,9 +31,20 @@ export interface Skill {
 
 // Method API
 const skillApi = {
-  getSkill: () => instance.get("/skill"),
-  createSkill: (data: { nama_skill: string; desk_skill:string; id_user: string }) =>
-    instance.post("/skill/create", data),
+  getSkill: (id_user?: string) => {
+    if (id_user) {
+      return instance.get(`/skill`, {
+        params: { where: `id_user:${id_user}` },
+      });
+    } else {
+      return instance.get("/skill");
+    }
+  },
+  createSkill: (data: {
+    nama_skill: string;
+    desk_skill: string;
+    id_user: string;
+  }) => instance.post("/skill/create", data),
   updateSkill: (id_skill: string, data: Skill) =>
     instance.put(`/skill/update/${id_skill}`, data),
   deleteSkill: (id_skill: string) =>

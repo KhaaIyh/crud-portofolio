@@ -26,7 +26,6 @@ function Create() {
   });
 
   const [skills, setSkills] = useState([{ nama_skill: "", desk_skill: "" }]);
-
   const addSkill = () => {
     setSkills([...skills, { nama_skill: "", desk_skill: "" }]);
   };
@@ -34,7 +33,6 @@ function Create() {
   const [projects, setProjects] = useState([
     { nama_project: "", desk_project: "", foto_project: null as File | null },
   ]);
-
   const addProject = () => {
     setProjects([
       ...projects,
@@ -45,7 +43,6 @@ function Create() {
   const [certificates, setCertificates] = useState([
     { nama_certificate: "", desk_certificate: "" },
   ]);
-
   const addCertificate = () => {
     setCertificates([
       ...certificates,
@@ -87,10 +84,8 @@ function Create() {
       if (users.profile) {
         formData.append("profile", users.profile);
       }
-
       const userResponse = await userApi.createUser(formData);
       console.log("Response dari server:", userResponse.data);
-
       const id_user = userResponse.data.data.id_user;
 
       for (const skill of skills) {
@@ -132,7 +127,6 @@ function Create() {
           if (project.foto_project) {
             projectData.append("foto_project", project.foto_project);
           }
-
           try {
             await projectApi.createProject(projectData);
             console.log("Project created");
@@ -142,7 +136,7 @@ function Create() {
         }
       }
 
-      console.log("User created successfully");
+      console.log("Portoflio created successfully");
       navigate("/");
     } catch (err) {
       console.log("Error creating portofolio:", err);

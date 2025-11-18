@@ -8,7 +8,10 @@ import { upload } from '../../middlewares/upload.middleware';
 const r = Router();
 const validator = projectValidator;
 const controller = new projectController();
-const fileUpload = upload({mimeTypes: ['image/jpeg', 'image/png'], maxBytes: 5 * 1024 * 1024}); // 5MB limit
+const fileUpload = upload({
+  mimeTypes: ['image/jpeg', 'image/png'],
+  maxBytes: 5 * 1024 * 1024,
+});
 
 r.get(
   '/',

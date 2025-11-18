@@ -1,4 +1,9 @@
-import { promises as fsp, constants as FS_CONST, existsSync, mkdirSync } from 'fs';
+import {
+  promises as fsp,
+  constants as FS_CONST,
+  existsSync,
+  mkdirSync,
+} from 'fs';
 import path from 'path';
 import JSZip from 'jszip';
 
@@ -32,7 +37,6 @@ class FileManager {
     return `${uniqueSuffix}-${originalname}`;
   }
 
-
   /**
    * Hapus satu file jika ada.
    */
@@ -55,7 +59,11 @@ class FileManager {
   /**
    * Salin file ke bucket tujuan jika sumber ada.
    */
-  async copyFile(filepath: string, dir: BaseDir, bucket: string): Promise<string | null> {
+  async copyFile(
+    filepath: string,
+    dir: BaseDir,
+    bucket: string
+  ): Promise<string | null> {
     try {
       await fsp.access(filepath, FS_CONST.F_OK);
     } catch {
@@ -85,8 +93,13 @@ class FileManager {
    * - Jika `fromDisk: true`, maka `data` dianggap path file di disk.
    * - Jika tidak, `data` dianggap konten langsung (Buffer/string).
    */
-  async zipFiles(existingZipBuffer: Buffer | null, files: ZipFileInput[]): Promise<Buffer> {
-    const zip = existingZipBuffer ? await JSZip.loadAsync(existingZipBuffer) : new JSZip();
+  async zipFiles(
+    existingZipBuffer: Buffer | null,
+    files: ZipFileInput[]
+  ): Promise<Buffer> {
+    const zip = existingZipBuffer
+      ? await JSZip.loadAsync(existingZipBuffer)
+      : new JSZip();
 
     for (const file of files) {
       let fileData: Buffer | string = file.data;

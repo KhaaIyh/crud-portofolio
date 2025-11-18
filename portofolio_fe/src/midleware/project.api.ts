@@ -18,7 +18,7 @@ export interface Project {
   id_project?: string;
   nama_project: string;
   desk_project: string;
-  foto_project: string;
+  foto_project: File | null;
   id_user: string;
 }
 
@@ -32,7 +32,15 @@ export interface Project {
 
 // Method API
 const projectApi = {
-  getProject: () => instance.get("/project"),
+  getProject: (id_user?: string) => {
+    if (id_user) {
+      return instance.get(`/project`, {
+        params: { where: `id_user:${id_user}` },
+      });
+    } else {
+      return instance.get("/project");
+    }
+  },
   createProject: (data: FormData) =>
     instance.post("/project/create", data, {
       headers: {
@@ -46,11 +54,7 @@ const projectApi = {
             "Content-Type": "multipart/form-data",
           },
         })
-      : instance.put(`/project/update/${id_project}`, data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }),
+      : instance.put(`/project/update/${id_project}`, data),
   deleteProject: (id_project: string) =>
     instance.delete(`/project/delete/${id_project}`),
 

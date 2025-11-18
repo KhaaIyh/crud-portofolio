@@ -4,22 +4,28 @@ import { skillApi, type Skill } from "../midleware/skill.api";
 import { certificateApi, type Certificate } from "../midleware/certificate.api";
 import { projectApi, type Project } from "../midleware/project.api";
 
-const API_BASE = (import.meta.env.VITE_REACT_API_URL || '').replace(/\/api\/?$/, '');
+const API_BASE = (import.meta.env.VITE_REACT_API_URL || "").replace(
+  /\/api\/?$/,
+  ""
+);
 
-function Hero() {
+interface HeroProps {
+  selectedUserId?: string | null;
+}
+
+function Hero({ selectedUserId }: HeroProps) {
   const [user, setUser] = useState<User | null>(null);
   const [skill, setSkill] = useState<Skill[]>([]);
   const [certificate, setCertificate] = useState<Certificate[]>([]);
   const [project, setProject] = useState<Project[]>([]);
 
   useEffect(() => {
+    if (!selectedUserId) return;
+
     const fetchUser = async () => {
       try {
-        const res = await userApi.getUser();
-        const items = res.data.data.items;
-        if (items && items.length > 0) {
-          setUser(items[0]);
-        }
+        const res = await userApi.getUser(selectedUserId);
+        setUser(res.data.data.items[0]);
         // const popularMovies = res.results.slice(0, 5); // Ambil 5 film
       } catch (error) {
         console.error("Gagal mengambil data user:", error);
@@ -28,12 +34,8 @@ function Hero() {
 
     const fetchSkill = async () => {
       try {
-        const res = await skillApi.getSkill();
-        console.log(res.data);
-        const items = res.data.data.items;
-        if (items && items.length > 0) {
-          setSkill(items);
-        }
+        const res = await skillApi.getSkill(selectedUserId);
+        setSkill(res.data.data.items || []);
         // const popularMovies = res.results.slice(0, 5); // Ambil 5 film
       } catch (error) {
         console.error("Gagal mengambil data skill:", error);
@@ -42,12 +44,8 @@ function Hero() {
 
     const fetchCertificate = async () => {
       try {
-        const res = await certificateApi.getCertificate();
-        console.log(res.data);
-        const items = res.data.data.items;
-        if (items && items.length > 0) {
-          setCertificate(items);
-        }
+        const res = await certificateApi.getCertificate(selectedUserId);
+        setCertificate(res.data.data.items || []);
         // const popularMovies = res.results.slice(0, 5); // Ambil 5 film
       } catch (error) {
         console.error("Gagal mengambil data certificate:", error);
@@ -56,23 +54,19 @@ function Hero() {
 
     const fetchProject = async () => {
       try {
-        const res = await projectApi.getProject();
-        console.log(res.data);
-        const items = res.data.data.items;
-        if (items && items.length > 0) {
-          setProject(items);
-        }
+        const res = await projectApi.getProject(selectedUserId);
+        setProject(res.data.data.items || []);
         // const popularMovies = res.results.slice(0, 5); // Ambil 5 film
       } catch (error) {
         console.error("Gagal mengambil data project:", error);
       }
     };
 
-    fetchProject();
     fetchUser();
+    fetchProject();
     fetchSkill();
     fetchCertificate();
-  }, []);
+  }, [selectedUserId]);
 
   // if (!useEffect) {
   //   return (
@@ -117,8 +111,12 @@ function Hero() {
           {skill.length > 0 ? (
             skill.map((skill) => (
               <div key={skill.id_skill}>
-                <h3 className="font-bold text-xl">{skill?.nama_skill || "Your Skills"}</h3>
-                <p className="max-w-2xl pb-4 ">{skill?.desk_skill || "Description Skills"}</p>
+                <h3 className="font-bold text-xl">
+                  {skill?.nama_skill || "Your Skills"}
+                </h3>
+                <p className="max-w-2xl pb-4 ">
+                  {skill?.desk_skill || "Description Skills"}
+                </p>
               </div>
             ))
           ) : (
@@ -250,10 +248,22 @@ function Hero() {
                 className="border-2 text-center rounded-md bg-white p-4 shadow-xl"
               >
                 <div className="bg-slate-300 mb-4 flex items-center justify-center rounded-md">
-                  <img src={project?.foto_project ? `${API_BASE}${project.foto_project}` : undefined} alt="Photo Project" className="p-4" />
+                  <img
+                    src={
+                      project?.foto_project
+                        ? `${API_BASE}${project.foto_project}`
+                        : undefined
+                    }
+                    alt="Photo Project"
+                    className="p-4"
+                  />
                 </div>
-                <h3 className="font-bold text-xl">{project?.nama_project || "Your Project"}</h3>
-                <p className="max-w-2xl text-justify">{project?.desk_project || "Description Project"}</p>
+                <h3 className="font-bold text-xl">
+                  {project?.nama_project || "Your Project"}
+                </h3>
+                <p className="max-w-2xl text-justify">
+                  {project?.desk_project || "Description Project"}
+                </p>
               </div>
             ))
           ) : (

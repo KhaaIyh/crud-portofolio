@@ -17,11 +17,11 @@ const instance = axios.create({
 export interface User {
   id_user?: string;
   email: string;
-  no_hp: number;
+  no_hp: string;
   nama: string;
   title: string;
   bio: string;
-  profile: string;
+  profile: File | null;
   instagram: string;
   github: string;
   linkedin: string;
@@ -37,7 +37,13 @@ export interface User {
 
 // Method API
 const userApi = {
-  getUser: () => instance.get("/user"),
+  getUser: (id_user?: string) => {
+    if (id_user) {
+      return instance.get(`/user`, { params: { where: `id_user:${id_user}` } });
+    } else {
+      return instance.get("/user");
+    }
+  },
   createUser: (data: FormData) =>
     instance.post("/user/create", data, {
       headers: {
@@ -51,11 +57,7 @@ const userApi = {
             "Content-Type": "multipart/form-data",
           },
         })
-      : instance.put(`/user/update/${id_user}`, data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }),
+      : instance.put(`/user/update/${id_user}`, data),
   deleteUser: (id_user: string) => instance.delete(`/user/delete/${id_user}`),
 
   //   getMovieDetails: (movieId: number) =>

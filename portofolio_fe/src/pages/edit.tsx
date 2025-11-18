@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
-import User from "../components/edit/user";
-import Skill from "../components/edit/skill";
-import Certificate from "../components/edit/certificate";
-import Project from "../components/edit/project";
+import User from "../components/create/user";
+import Skill from "../components/create/skill";
+import Certificate from "../components/create/certificate";
+import Project from "../components/create/project";
 import Button from "../components/button";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../midleware/user.api";
 import { skillApi } from "../midleware/skill.api";
 import { certificateApi } from "../midleware/certificate.api";
 import { projectApi } from "../midleware/project.api";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-function Edit() {
+interface EditProps {
+  selectedUserId?: string | null;
+}
+
+function Edit({ selectedUserId }: EditProps) {
   const navigate = useNavigate();
 
   const [users, setUsers] = useState<any>({
@@ -45,7 +50,7 @@ function Edit() {
     },
   ]);
 
-  const [projectPaths, setProjectPaths] = useState<Record<string, string>>({});
+  const [, setProjectPaths] = useState<Record<string, string>>({});
 
   const addProject = () => {
     setProjects([
@@ -99,6 +104,8 @@ function Edit() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!selectedUserId) return;
+
       try {
         const [
           userResponse,
@@ -106,16 +113,15 @@ function Edit() {
           certificateResponse,
           projectResponse,
         ] = await Promise.all([
-          userApi.getUser(),
-          skillApi.getSkill(),
-          certificateApi.getCertificate(),
-          projectApi.getProject(),
+          userApi.getUser(selectedUserId),
+          skillApi.getSkill(selectedUserId),
+          certificateApi.getCertificate(selectedUserId),
+          projectApi.getProject(selectedUserId),
         ]);
 
         const userData = userResponse.data.data.items || [];
         if (userData.length > 0) {
           const user = userData[0];
-          setUserProfilePath(user.profile || "");
           setUsers({
             id_user: user.id_user,
             nama: user.nama || "",
@@ -128,67 +134,40 @@ function Edit() {
             profile: null,
             bio: user.bio || "",
           });
+          setUserProfilePath(user.profile || "");
         }
 
-        const skillData = skillResponse.data.data.items || [];
-        if (skillData.length > 0) {
-          setSkills(
-            skillData.map((skill: any) => ({
-              id_skill: skill.id_skill,
-              nama_skill: skill.nama_skill || "",
-              desk_skill: skill.desk_skill || "",
-            }))
-          );
-        } else {
-          setSkills([{ nama_skill: "", desk_skill: "" }]);
-        }
-
-        const certificateData = certificateResponse.data.data.items || [];
-        if (certificateData.length > 0) {
-          setCertificates(
-            certificateData.map((certificate: any) => ({
+        setSkills(
+          (skillResponse.data.data.items || []).map((skill: any) => ({
+            id_skill: skill.id_skill,
+            nama_skill: skill.nama_skill || "",
+            desk_skill: skill.desk_skill || "",
+          }))
+        );
+        setCertificates(
+          (certificateResponse.data.data.items || []).map(
+            (certificate: any) => ({
               id_certificate: certificate.id_certificate,
               nama_certificate: certificate.nama_certificate || "",
               desk_certificate: certificate.desk_certificate || "",
-            }))
-          );
-        } else {
-          setCertificates([{ nama_certificate: "", desk_certificate: "" }]);
-        }
-
-        const projectData = projectResponse.data.data.items || [];
-        if (projectData.length > 0) {
-          const paths: Record<string, string> = {};
-          setProjects(
-            projectData.map((project: any) => {
-              paths[project.id_project] = project.foto_project || "";
-              return {
-                id_project: project.id_project,
-                nama_project: project.nama_project || "",
-                desk_project: project.desk_project || "",
-                foto_project: null,
-              };
             })
-          );
-          setProjectPaths(paths);
-        } else {
-          setProjects([
-            {
-              id_project: undefined,
-              nama_project: "",
-              desk_project: "",
-              foto_project: null,
-            },
-          ]);
-        }
+          )
+        );
+
+        setProjects(
+          projectResponse.data.data.items.map((project: any) => ({
+            id_project: project.id_project,
+            nama_project: project.nama_project || "",
+            desk_project: project.desk_project || "",
+            foto_project: null,
+          }))
+        );
       } catch (err) {
-        console.error("Error fetching user data:", err);
+        console.log("Error fetching user data:", err);
       }
     };
-
     fetchUserData();
-  }, []);
-
+  }, [selectedUserId]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -265,28 +244,28 @@ function Edit() {
 
       for (const project of projects) {
         if (project.id_project) {
+          const formData = new FormData();
+          formData.append("id_project", project.id_project);
+          formData.append("nama_project", project.nama_project);
+          formData.append("desk_project", project.desk_project);
+          formData.append("id_user", users.id_user);
           if (project.foto_project) {
-            const formData = new FormData();
-            formData.append("id_project", project.id_project);
             formData.append("foto_project", project.foto_project);
-            formData.append("nama_project", project.nama_project);
-            formData.append("desk_project", project.desk_project);
-            formData.append("id_user", users.id_user);
-            await projectApi.updateProject(project.id_project, formData);
-          } else {
-            const projectPayload = {
-              id_project: project.id_project,
-              nama_project: project.nama_project,
-              desk_project: project.desk_project,
-              id_user: users.id_user,
-              foto_project: projectPaths[project.id_project] || "",
-            };
-            await projectApi.updateProject(project.id_project, projectPayload);
           }
-        } else if (project.nama_project || project.desk_project) {
-          console.warn(
-            `Project is missing id_project. Skipping update.`
-          );
+          await projectApi.updateProject(project.id_project, formData);
+        } else if (
+          project.nama_project ||
+          project.desk_project ||
+          project.foto_project
+        ) {
+          const formData = new FormData();
+          formData.append("nama_project", project.nama_project);
+          formData.append("desk_project", project.desk_project);
+          formData.append("id_user", users.id_user);
+          if (project.foto_project) {
+            formData.append("foto_project", project.foto_project);
+          }
+          await projectApi.createProject(formData);
         }
       }
 

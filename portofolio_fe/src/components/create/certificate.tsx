@@ -1,26 +1,3 @@
-// function Certificate() {
-//   return (
-//     <>
-//       <div className="bg-slate-200 text-black py-10 px-96 flex flex-col justify-center items-center gap-4">
-//         <h1 className="font-bold text-4xl">Your Certificate</h1>
-
-//         <div className="flex justify-between gap-4">
-//           <div>
-//             <label className="font-bold">Certificate name</label>
-//             <input type="text" className="w-full rounded-md p-2 shadow-xl" />
-//           </div>
-//           <div>
-//             <label className="font-bold">Certificate description</label>
-//             <textarea className="w-full rounded-md p-2 shadow-xl"></textarea>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
-// export default Certificate;
-
 type CertificateItem = {
   nama_certificate: string;
   desk_certificate: string;
@@ -32,14 +9,18 @@ interface CertificateProps {
   addCertificate: () => void;
 }
 
-function Certificate({ certificates, setCertificates, addCertificate }: CertificateProps) {
+function Certificate({
+  certificates,
+  setCertificates,
+  addCertificate,
+}: CertificateProps) {
   const handleChange = (
     index: number,
     field: keyof CertificateItem,
     value: string
   ) => {
     const updated = [...certificates];
-    updated[index][field] = value as never;
+    updated[index][field] = value as string;
     setCertificates(updated);
   };
 

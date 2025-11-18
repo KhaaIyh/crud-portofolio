@@ -11,14 +11,18 @@ class projectService extends BaseService {
     const data = await this.db.project.findMany({ ...q });
 
     if (query?.paginate) {
-      const countData = await this.db.project.count({ where: (q as any).where });
+      const countData = await this.db.project.count({
+        where: (q as any).where,
+      });
       return this.paginate(data, countData, q as any);
     }
     return this.noPaginate(data);
   };
 
   findById = async (id: string) => {
-    const data = await this.db.project.findUniqueOrThrow({ where: { id_project: id } });
+    const data = await this.db.project.findUniqueOrThrow({
+      where: { id_project: id },
+    });
     return data;
   };
 
@@ -28,7 +32,10 @@ class projectService extends BaseService {
   };
 
   update = async (id: string, payload: any) => {
-    const data = await this.db.project.update({ where: { id_project: id }, data: payload });
+    const data = await this.db.project.update({
+      where: { id_project: id },
+      data: payload,
+    });
     return data;
   };
 

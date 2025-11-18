@@ -1,9 +1,6 @@
 import BaseController from '../../base/controller.base';
 import skillService from './skill.service';
 import type { Request, Response } from 'express';
-import path from 'path';
-import FileManager from '../../lib/file-manager/index';
-import { promises as fsp } from 'fs';
 
 class skillController extends BaseController {
   #service: skillService;

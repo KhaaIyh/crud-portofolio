@@ -1,17 +1,36 @@
-// import Navbar from "../components/navbar";
+import { useState } from "react";
+import Navbar from "../components/navbar";
 import Hero from "../components/hero";
-// import Fitur1 from "../components/Fitur1";
-// import Footer from "../components/footer";
-
+import Footer from "../components/footer";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(
+    typeof window !== "undefined"
+      ? localStorage.getItem("selectedUserId")
+      : null
+  );
+
+  const location = useLocation();
+  const hideLayout =
+    location.pathname === "/create" || location.pathname === "/edit";
+
   return (
     <div>
+      {!hideLayout && (
+        <Navbar
+          selectedUserId={selectedUserId}
+          onSelectUser={setSelectedUserId}
+        />
+      )}
+      <Hero selectedUserId={selectedUserId} />
 
-      <Hero />
-      {/* <div className="w-full">
-        <Fitur1 />
-      </div> */}
+      {!hideLayout && (
+        <Footer
+          selectedUserId={selectedUserId}
+          onSelectUser={setSelectedUserId}
+        />
+      )}
     </div>
   );
 };

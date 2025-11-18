@@ -1,15 +1,33 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { userApi } from "../midleware/user.api";
-import { skillApi } from "../midleware/skill.api";
-import { certificateApi } from "../midleware/certificate.api";
-import { projectApi } from "../midleware/project.api";
+import { userApi, type User } from "../midleware/user.api";
+import { skillApi, type Skill } from "../midleware/skill.api";
+import { certificateApi, type Certificate } from "../midleware/certificate.api";
+import { projectApi, type Project } from "../midleware/project.api";
 
-function Navbar() {
+interface NavbarProps {
+  selectedUserId?: string | null;
+  onSelectUser?: (id: string | null) => void;
+}
+
+function Navbar({ selectedUserId, onSelectUser }: NavbarProps) {
   const navigate = useNavigate();
   const [hasData, setHasData] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [selected, setSelected] = useState<string | null>(selectedUserId || null);
 
   useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await userApi.getUser();
+        console.log("Fetched users:", res.data);
+        const items = res.data.data.items || [];
+        setUsers(items);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
     const checkData = async () => {
       try {
         const userResponse = await userApi.getUser();
@@ -39,6 +57,7 @@ function Navbar() {
       }
     };
 
+    fetchUsers();
     checkData();
   }, []);
 
@@ -48,18 +67,10 @@ function Navbar() {
     }
 
     try {
-      const userResponse = await userApi.getUser();
-      const users = userResponse.data.data.items || [];
-
       const skillResponse = await skillApi.getSkill();
-      const skills = skillResponse.data.data.items || [];
-
-      const certificateResponse = await certificateApi.getCertificate();
-      const certificates = certificateResponse.data.data.items || [];
-
-      const projectResponse = await projectApi.getProject();
-      const projects = projectResponse.data.data.items || [];
-
+      const skills = (skillResponse.data.data.items as Skill[] || []).filter(
+        (skill) => skill.id_user === selected
+      );
       for (const skill of skills) {
         try {
           await skillApi.deleteSkill(skill.id_skill!);
@@ -68,6 +79,10 @@ function Navbar() {
         }
       }
 
+      const certificateResponse = await certificateApi.getCertificate();
+      const certificates = (certificateResponse.data.data.items as Certificate[] || []).filter(
+        (certificate) => certificate.id_user === selected
+      );
       for (const certificate of certificates) {
         try {
           await certificateApi.deleteCertificate(certificate.id_certificate!);
@@ -76,6 +91,10 @@ function Navbar() {
         }
       }
 
+      const projectResponse = await projectApi.getProject();
+      const projects = (projectResponse.data.data.items as Project[] || []).filter(
+        (project) => project.id_user === selected
+      );
       for (const project of projects) {
         try {
           await projectApi.deleteProject(project.id_project!);
@@ -84,18 +103,24 @@ function Navbar() {
         }
       }
 
-      for (const user of users) {
-        try {
-          await userApi.deleteUser(user.id_user!);
-        } catch (error) {
-          console.error("Error deleting user:", error);
-        }
-      }
+      await userApi.deleteUser(selected!);
+      setSelected(null);
+      localStorage.removeItem("selectedUserId");
+      if (onSelectUser) onSelectUser(null);
+      alert("All data deleted successfully.");
 
       window.location.reload();
     } catch (error) {
       console.error("Error during deletion process:", error);
     }
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value || null;
+    setSelected(id);
+    localStorage.setItem("selectedUserId", id || "");
+    if (onSelectUser) onSelectUser(id);
+    window.location.reload();
   };
 
   return (
@@ -125,32 +150,54 @@ function Navbar() {
               Project
             </a>
           </li>
-          {!hasData && (
+          <li>
+            <button
+              onClick={() => navigate("/create")}
+              className="text-cyan-300 font-bold hover:text-cyan-800"
+            >
+              Make your Portofolio
+            </button>
+          </li>
+          <li>
+            <select
+              value={selected ?? ""}
+              onChange={handleSelectChange}
+              className="bg-transparent text-cyan-300 font-bold hover:text-cyan-800"
+            >
+              <option value="" className="text-gray-300">
+                Select Portofolio
+              </option>
+              {users.map((u) => (
+                <option
+                  key={u.id_user}
+                  value={u.id_user}
+                  className="text-black"
+                >
+                  {u.nama}
+                </option>
+              ))}
+            </select>
+          </li>
+          {hasData && (
             <li>
               <button
-                onClick={() => navigate("/create")}
-                className="text-cyan-300 font-bold hover:text-cyan-800"
+                onClick={() => navigate("/edit/" + selected)}
+                className="text-gray-600 font-bold hover:text-cyan-800"
               >
-                Make your Portofolio
+                Edit
               </button>
             </li>
           )}
-          <li>
-            <button
-              onClick={() => navigate("/edit")}
-              className="text-gray-600 font-bold hover:text-cyan-800"
-            >
-              Edit all
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={handleDelete}
-              className="text-gray-600 font-bold hover:text-red-800"
-            >
-              Delete all
-            </button>
-          </li>
+          {hasData && (
+            <li>
+              <button
+                onClick={handleDelete}
+                className="text-gray-600 font-bold hover:text-red-800"
+              >
+                Delete
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
     </>
