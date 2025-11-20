@@ -1,7 +1,4 @@
-type CertificateItem = {
-  nama_certificate: string;
-  desk_certificate: string;
-};
+import { type CertificateItem } from "../../midleware/certificate.api";
 
 interface CertificateProps {
   certificates: CertificateItem[];

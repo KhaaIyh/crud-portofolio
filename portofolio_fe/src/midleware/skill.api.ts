@@ -14,6 +14,11 @@ const instance = axios.create({
 // });
 
 // Interface hasil film individual
+export interface SkillItem {
+  nama_skill: string;
+  desk_skill: string;
+};
+
 export interface Skill {
   id_skill?: string;
   nama_skill: string;

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import User from "../components/create/user";
-import Skill from "../components/create/skill";
-import Certificate from "../components/create/certificate";
-import Project from "../components/create/project";
+import Users from "../components/create/user";
+import Skills from "../components/create/skill";
+import Certificates from "../components/create/certificate";
+import Projects from "../components/create/project";
 import Button from "../components/button";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../midleware/user.api";
@@ -85,7 +85,6 @@ function Create() {
         formData.append("profile", users.profile);
       }
       const userResponse = await userApi.createUser(formData);
-      console.log("Response dari server:", userResponse.data);
       const id_user = userResponse.data.data.id_user;
 
       for (const skill of skills) {
@@ -146,16 +145,16 @@ function Create() {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <User users={users} setUsers={setUsers} />
+        <Users users={users} setUsers={setUsers} />
 
-        <Skill skills={skills} setSkills={setSkills} addSkill={addSkill} />
-        <Project
+        <Skills skills={skills} setSkills={setSkills} addSkill={addSkill} />
+        <Projects
           projects={projects}
           setProjects={setProjects}
           addProject={addProject}
         />
 
-        <Certificate
+        <Certificates
           certificates={certificates}
           setCertificates={setCertificates}
           addCertificate={addCertificate}

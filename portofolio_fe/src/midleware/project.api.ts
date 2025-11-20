@@ -14,6 +14,12 @@ const instance = axios.create({
 // });
 
 // Interface hasil film individual
+export interface ProjectItem {
+  nama_project: string;
+  foto_project: File | null;
+  desk_project: string;
+};
+
 export interface Project {
   id_project?: string;
   nama_project: string;

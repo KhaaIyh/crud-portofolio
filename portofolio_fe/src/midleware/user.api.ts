@@ -14,6 +14,18 @@ const instance = axios.create({
 // });
 
 // Interface hasil film individual
+export interface UserItem {
+  nama: string;
+  title: string;
+  email: string;
+  no_hp: string;
+  github: string;
+  instagram: string;
+  linkedin: string;
+  profile: File | null;
+  bio: string;
+};
+
 export interface User {
   id_user?: string;
   email: string;

@@ -1,8 +1,4 @@
-type ProjectItem = {
-  nama_project: string;
-  foto_project: File | null;
-  desk_project: string;
-};
+import { type ProjectItem } from "../../midleware/project.api";
 
 interface ProjectProps {
   projects: ProjectItem[];

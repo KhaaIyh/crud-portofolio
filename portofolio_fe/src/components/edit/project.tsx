@@ -6,7 +6,7 @@ interface ProjectProps {
   addProject: () => void;
 }
 
-function Project({ projects, setProjects }: ProjectProps) {
+function Projects({ projects, setProjects, addProject }: ProjectProps) {
   const handleChange = (
     index: number,
     field: keyof Project,
@@ -33,7 +33,6 @@ function Project({ projects, setProjects }: ProjectProps) {
                   handleChange(i, "nama_project", e.target.value)
                 }
                 className="w-full rounded-md p-2 shadow-xl"
-                required
               />
             </div>
 
@@ -59,12 +58,19 @@ function Project({ projects, setProjects }: ProjectProps) {
             value={item.desk_project}
             onChange={(e) => handleChange(i, "desk_project", e.target.value)}
             className="w-full rounded-md p-2 shadow-xl"
-            required
           ></textarea>
         </div>
       ))}
+
+      <button
+        type="button"
+        onClick={addProject}
+        className="px-4 py-2 bg-slate-500 text-white rounded-md mt-2"
+      >
+        Add more Project
+      </button>
     </div>
   );
 }
 
-export default Project;
+export default Projects;

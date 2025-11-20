@@ -6,14 +6,18 @@ interface CertificateProps {
   addCertificate: () => void;
 }
 
-function Certificate({ certificates, setCertificates }: CertificateProps) {
+function Certificates({
+  certificates,
+  setCertificates,
+  addCertificate,
+}: CertificateProps) {
   const handleChange = (
     index: number,
     field: keyof Certificate,
     value: string
   ) => {
     const updated = [...certificates];
-    updated[index][field] = value as never;
+    updated[index][field] = value as string;
     setCertificates(updated);
   };
 
@@ -32,7 +36,6 @@ function Certificate({ certificates, setCertificates }: CertificateProps) {
                 handleChange(i, "nama_certificate", e.target.value)
               }
               className="bg-slate-300 w-full rounded-md p-2 shadow-xl"
-              required
             />
           </div>
 
@@ -44,13 +47,20 @@ function Certificate({ certificates, setCertificates }: CertificateProps) {
                 handleChange(i, "desk_certificate", e.target.value)
               }
               className="bg-slate-300 w-full rounded-md p-2 shadow-xl"
-              required
             ></textarea>
           </div>
         </div>
       ))}
+
+      <button
+        type="button"
+        onClick={addCertificate}
+        className="px-4 py-2 bg-slate-500 text-white rounded-md mt-2"
+      >
+        Add more Certificate
+      </button>
     </div>
   );
 }
 
-export default Certificate;
+export default Certificates;

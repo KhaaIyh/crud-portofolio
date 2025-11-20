@@ -5,7 +5,7 @@ interface UserProps {
   setUsers: React.Dispatch<React.SetStateAction<User>>;
 }
 
-function User({ users, setUsers }: UserProps) {
+function Users({ users, setUsers }: UserProps) {
   const handleChange = (field: keyof User, value: string | File | null) => {
     setUsers({
       ...users,
@@ -25,7 +25,6 @@ function User({ users, setUsers }: UserProps) {
               value={users.nama}
               onChange={(e) => handleChange("nama", e.target.value)}
               className="w-full rounded-md p-2 shadow-xl"
-              required
               autoFocus
             />
 
@@ -35,7 +34,6 @@ function User({ users, setUsers }: UserProps) {
               value={users.title}
               onChange={(e) => handleChange("title", e.target.value)}
               className="w-full rounded-md p-2 shadow-xl"
-              required
             />
 
             <label className="font-bold">Email</label>
@@ -44,7 +42,6 @@ function User({ users, setUsers }: UserProps) {
               value={users.email}
               onChange={(e) => handleChange("email", e.target.value)}
               className="w-full rounded-md p-2 shadow-xl"
-              required
             />
 
             <label className="font-bold">No HP</label>
@@ -53,7 +50,6 @@ function User({ users, setUsers }: UserProps) {
               value={users.no_hp}
               onChange={(e) => handleChange("no_hp", e.target.value)}
               className="w-full rounded-md p-2 shadow-xl"
-              required
             />
           </div>
 
@@ -85,15 +81,14 @@ function User({ users, setUsers }: UserProps) {
             <label className="font-bold">Photo</label>
             <input
               type="file"
+              accept="image/*"
               onChange={(e) =>
                 handleChange(
                   "profile",
                   e.target.files ? e.target.files[0] : null
                 )
               }
-              accept="image/*"
               className="w-full"
-              required
             />
           </div>
         </div>
@@ -102,11 +97,10 @@ function User({ users, setUsers }: UserProps) {
           value={users.bio}
           onChange={(e) => handleChange("bio", e.target.value)}
           className="w-full rounded-md p-2 shadow-xl"
-          required
         ></textarea>
       </div>
     </div>
   );
 }
 
-export default User;
+export default Users;

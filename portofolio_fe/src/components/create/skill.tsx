@@ -1,7 +1,4 @@
-type SkillItem = {
-  nama_skill: string;
-  desk_skill: string;
-};
+import { type SkillItem } from "../../midleware/skill.api";
 
 interface SkillProps {
   skills: SkillItem[];

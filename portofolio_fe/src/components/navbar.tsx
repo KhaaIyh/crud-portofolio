@@ -13,14 +13,13 @@ interface NavbarProps {
 function Navbar({ selectedUserId, onSelectUser }: NavbarProps) {
   const navigate = useNavigate();
   const [hasData, setHasData] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
+  const [user, setUsers] = useState<User[]>([]);
   const [selected, setSelected] = useState<string | null>(selectedUserId || null);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const res = await userApi.getUser();
-        console.log("Fetched users:", res.data);
         const items = res.data.data.items || [];
         setUsers(items);
       } catch (error) {
@@ -120,7 +119,6 @@ function Navbar({ selectedUserId, onSelectUser }: NavbarProps) {
     setSelected(id);
     localStorage.setItem("selectedUserId", id || "");
     if (onSelectUser) onSelectUser(id);
-    window.location.reload();
   };
 
   return (
@@ -164,10 +162,10 @@ function Navbar({ selectedUserId, onSelectUser }: NavbarProps) {
               onChange={handleSelectChange}
               className="bg-transparent text-cyan-300 font-bold hover:text-cyan-800"
             >
-              <option value="" className="text-gray-300">
+              <option value="" disabled hidden className="text-gray-300">
                 Select Portofolio
               </option>
-              {users.map((u) => (
+              {user.map((u) => (
                 <option
                   key={u.id_user}
                   value={u.id_user}

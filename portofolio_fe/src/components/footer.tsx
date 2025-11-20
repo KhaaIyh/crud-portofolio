@@ -6,12 +6,11 @@ import { userApi, type User } from "../midleware/user.api";
 
 interface FooterProps {
   selectedUserId?: string | null;
-  onSelectUser?: (id: string | null) => void;
 }
 
 function Footer({ selectedUserId }: FooterProps) {
   const [users, setUser] = useState<User[]>([]);
-  const [selected] = useState<string | null>(selectedUserId || null);
+  const selected = selectedUserId;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,7 +39,6 @@ function Footer({ selectedUserId }: FooterProps) {
   };
 
   const selectedUser = users.find((u) => u.id_user === selected) || dummyUser;
-  if (!selectedUser) return null;
 
   // if (!useEffect) {
   //   return (

@@ -28,7 +28,6 @@ const Home = () => {
       {!hideLayout && (
         <Footer
           selectedUserId={selectedUserId}
-          onSelectUser={setSelectedUserId}
         />
       )}
     </div>

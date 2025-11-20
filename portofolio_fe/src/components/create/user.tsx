@@ -1,14 +1,4 @@
-type UserItem = {
-  nama: string;
-  title: string;
-  email: string;
-  no_hp: string;
-  github: string;
-  instagram: string;
-  linkedin: string;
-  profile: File | null;
-  bio: string;
-};
+import { type UserItem } from "../../midleware/user.api";
 
 interface UserProps {
   users: UserItem;
@@ -103,7 +93,6 @@ function User({ users, setUsers }: UserProps) {
               }
               accept="image/*"
               className="w-full"
-              required
             />
           </div>
         </div>

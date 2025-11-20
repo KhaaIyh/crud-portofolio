@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import User from "../components/create/user";
-import Skill from "../components/create/skill";
-import Certificate from "../components/create/certificate";
-import Project from "../components/create/project";
+import Users from "../components/edit/user";
+import Skills from "../components/edit/skill";
+import Certificates from "../components/edit/certificate";
+import Projects from "../components/edit/project";
 import Button from "../components/button";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../midleware/user.api";
@@ -30,13 +30,11 @@ function Edit({ selectedUserId }: EditProps) {
     profile: null as File | null,
     bio: "",
   });
-
   const [userProfilePath, setUserProfilePath] = useState<string>("");
 
   const [skills, setSkills] = useState<any[]>([
     { nama_skill: "", desk_skill: "" },
   ]);
-
   const addSkill = () => {
     setSkills([...skills, { nama_skill: "", desk_skill: "" }]);
   };
@@ -51,7 +49,6 @@ function Edit({ selectedUserId }: EditProps) {
   ]);
 
   const [, setProjectPaths] = useState<Record<string, string>>({});
-
   const addProject = () => {
     setProjects([
       ...projects,
@@ -280,16 +277,16 @@ function Edit({ selectedUserId }: EditProps) {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <User users={users} setUsers={setUsers} />
+        <Users users={users} setUsers={setUsers} />
 
-        <Skill skills={skills} setSkills={setSkills} addSkill={addSkill} />
-        <Project
+        <Skills skills={skills} setSkills={setSkills} addSkill={addSkill} />
+        <Projects
           projects={projects}
           setProjects={setProjects}
           addProject={addProject}
         />
 
-        <Certificate
+        <Certificates
           certificates={certificates}
           setCertificates={setCertificates}
           addCertificate={addCertificate}

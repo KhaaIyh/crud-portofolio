@@ -14,6 +14,11 @@ const instance = axios.create({
 // });
 
 // Interface hasil film individual
+export interface CertificateItem {
+  nama_certificate: string;
+  desk_certificate: string;
+};
+
 export interface Certificate {
   id_certificate?: string;
   nama_certificate: string;
